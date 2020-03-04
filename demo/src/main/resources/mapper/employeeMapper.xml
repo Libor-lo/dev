@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dev.demo.mapper.EmployeeMapper">
+    
+    <resultMap id="baseEmployee" type="com.dev.demo.pojo.Employee">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="age" property="age" />
+        <result column="email" property="email" />
+        <result column="enroll" property="enroll" />
+        <result column="dId" property="dId" />
+        <collection  property="department" ofType="com.dev.demo.pojo.Department">
+            <result column="department_id" property="id"/>
+            <result column="department_name" property="name"/>
+            <result column="department_create_time" property="createTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryByAll" resultMap="baseEmployee">
+        select
+            e.id as id,
+            e.name as name,
+            e.age as age,
+            e.d_id as dId,
+            e.email as email,
+            e.enroll as enroll,
+            d.id as department_id,
+            d.name as department_name,
+            d.create_time as department_create_time
+        from employee as e, department as d where e.d_id = d.id
+    </select>
+
+    <select id="queryById" resultMap="baseEmployee" parameterType="integer">
+        select
+            e.id as id,
+            e.name as name,
+            e.age as age,
+            e.d_id as dId,
+            e.email as email,
+            e.enroll as enroll,
+            d.id as department_id,
+            d.name as department_name,
+            d.create_time as department_create_time
+        from employee as e, department as d where e.id = #{id} and e.d_id = d.id
+    </select>
+
+
+</mapper>

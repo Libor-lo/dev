@@ -1,0 +1,39 @@
+server:
+  port: 8084
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    preferIpAddress: true
+    lease-expiration-duration-in-seconds: 10 #eureka client发送心跳给server端后，续约到期时间（默认90秒）
+    lease-renewal-interval-in-seconds: 5 #发送心跳续约间隔
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka/
+
+spring:
+  application:
+    name: dev-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: dev-demo
+          uri: lb://dev-demo
+          predicates:
+            - Path=/demo/**
+          filters:
+            - StripPrefix=1
+        - id: dev-feign
+          uri: lb://dev-feign
+          predicates:
+            - Path=/feign/**
+          filters:
+            - StripPrefix=1
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
